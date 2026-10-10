@@ -1,0 +1,176 @@
+<!-- Encode / Embed Workspace -->
+<div class="ss-workspace">
+    <!-- Encoding Form -->
+    <section class="ss-panel ss-edge ss-rise">
+        <header class="ss-panel-head">
+            <h2 class="ss-panel-title">
+                <span class="ss-panel-title-icon"><i class="bi bi-lock"></i></span>
+                Encode Inputs
+            </h2>
+            <span class="ss-tag is-violet">AES-256-GCM + LSB</span>
+        </header>
+        <div class="ss-panel-body">
+            <form id="embedForm" enctype="multipart/form-data">
+                <!-- Image Upload Dropzone -->
+                <div class="ss-field">
+                    <label class="ss-label" for="coverImageInput"><span class="ss-step">01</span> Upload Cover Image (PNG / BMP)</label>
+                    <div class="dropzone-area" id="embedDropzone">
+                        <input type="file" id="coverImageInput" name="cover_image" accept="image/png, image/bmp" class="d-none" required>
+                        <div class="dropzone-content" id="embedDropzonePrompt">
+                            <div class="ss-drop-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                            <h3 class="ss-drop-title">Drag &amp; Drop Cover Image Here</h3>
+                            <p class="ss-drop-sub">Accepts lossless PNG or BMP images</p>
+                            <button type="button" class="ss-btn ss-btn-secondary ss-btn-sm"><i class="bi bi-folder2-open"></i> Browse File</button>
+                            <div class="ss-drop-formats"><span class="ss-tag">PNG</span><span class="ss-tag">BMP</span><span class="ss-tag">Lossless</span></div>
+                        </div>
+                        <div class="dropzone-preview d-none" id="embedPreviewContainer">
+                            <div class="ss-specimen">
+                                <img id="coverPreviewImg" src="" alt="Cover Image Preview" class="max-h-200">
+                                <div class="ss-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                            </div>
+                            <div class="ss-file-meta">
+                                <span id="coverImageName" class="ss-file-chip">cover.png</span>
+                                <span id="coverImageDims" class="ss-tag is-cyan">0 x 0 px</span>
+                                <button type="button" class="ss-remove" id="removeCoverBtn" aria-label="Remove cover image"><i class="bi bi-x-lg"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secret Message Input -->
+                <div class="ss-field">
+                    <div class="ss-field-row">
+                        <label for="secretTextInput" class="ss-label"><span class="ss-step">02</span> Secret Message Payload</label>
+                        <span id="secretCharCount" class="ss-counter">0 characters (0 Bytes)</span>
+                    </div>
+                    <textarea class="form-control cyber-input font-monospace" id="secretTextInput" name="secret_text" rows="4" placeholder="Enter confidential message to hide inside image pixels..." required></textarea>
+                </div>
+
+                <!-- Password Field -->
+                <div class="ss-field">
+                    <label for="passwordInput" class="ss-label"><span class="ss-step">03</span> Encryption Password</label>
+                    <div class="ss-input-group">
+                        <span class="ss-input-icon"><i class="bi bi-key"></i></span>
+                        <input type="password" class="form-control cyber-input" id="passwordInput" name="password" placeholder="Enter secret password for PBKDF2 key derivation" required>
+                        <button class="toggle-password" type="button" data-target="passwordInput" aria-label="Show or hide password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- LSB Count Selector -->
+                <div class="ss-field">
+                    <label for="lsbSelect" class="ss-label"><span class="ss-step">04</span> LSB Bit Depth</label>
+                    <select class="form-select cyber-input" id="lsbSelect" name="lsb_count">
+                        <option value="1" selected>1 Bit per Channel (Maximum Steganographic Quality - High PSNR)</option>
+                        <option value="2">2 Bits per Channel (Higher Payload Capacity - Moderate Distortion)</option>
+                    </select>
+                </div>
+
+                <!-- Live Capacity Meter -->
+                <div class="ss-field ss-inset">
+                    <div class="ss-field-row">
+                        <span class="ss-label mb-0"><i class="bi bi-speedometer2 ss-faint"></i> Cover Capacity Utilization</span>
+                        <span id="capacityPctText" class="ss-counter">0% Used</span>
+                    </div>
+                    <div class="progress cyber-progress">
+                        <div id="capacityProgressBar" class="progress-bar bg-cyber-gradient" role="progressbar" style="width: 0%;"></div>
+                    </div>
+
+                    <div class="ss-capacity-grid">
+                        <div class="ss-capacity-cell"><span>Total</span><strong id="lblTotalCap">0 Bytes</strong></div>
+                        <div class="ss-capacity-cell"><span>Used</span><strong id="lblUsedCap">0 Bytes</strong></div>
+                        <div class="ss-capacity-cell"><span>Remaining</span><strong id="lblRemCap">0 Bytes</strong></div>
+                        <div class="ss-capacity-cell"><span>Message</span><strong id="lblMsgSize">0 Bytes</strong></div>
+                    </div>
+
+                    <!-- Capacity Overflow Error Banner -->
+                    <div id="capacityErrorBanner" class="ss-alert is-bad mt-3 d-none" role="alert">
+                        <span class="ss-alert-icon"><i class="bi bi-exclamation-triangle"></i></span>
+                        <p class="pt-1"><span id="capacityErrorText">Payload exceeds available image capacity!</span></p>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="ss-btn ss-btn-primary ss-btn-lg ss-btn-block" id="embedSubmitBtn">
+                    <i class="bi bi-lock-fill"></i>Encrypt &amp; Embed Secret Message
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Output & Quality Metrics -->
+    <section class="ss-panel ss-output ss-rise" style="--d:1">
+        <header class="ss-panel-head">
+            <h2 class="ss-panel-title">
+                <span class="ss-panel-title-icon is-cyan"><i class="bi bi-image"></i></span>
+                Encode Result
+            </h2>
+            <span class="ss-tag is-cyan">Stego PNG + Metrics</span>
+        </header>
+        <div class="ss-panel-body">
+
+            <!-- Placeholder Before Encoding -->
+            <div id="embedPlaceholder" class="ss-empty">
+                <div class="ss-empty-art"><i class="bi bi-images"></i></div>
+                <h6>No Stego Image Generated Yet</h6>
+                <p>Upload a cover PNG image on the left, enter your secret payload &amp; password, and click Encrypt &amp; Embed to generate the stego image.</p>
+            </div>
+
+            <!-- Loading State -->
+            <div id="embedSpinner" class="d-none ss-empty">
+                <div class="cyber-spinner mx-auto mb-4"></div>
+                <h6>Encrypting &amp; Embedding Payload...</h6>
+                <div class="ss-pipeline">
+                    <span>PBKDF2 SHA-256</span><span>AES-256-GCM AEAD</span><span>LSB Embedding</span>
+                </div>
+            </div>
+
+            <!-- Generated Stego Image Result -->
+            <div id="embedResult" class="d-none">
+                <div class="text-center mb-4">
+                    <div class="ss-specimen mb-3">
+                        <img id="stegoResultImg" src="" alt="Stego PNG Result" class="max-h-250">
+                        <div class="laser-scan-line"></div>
+                        <div class="ss-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                    </div>
+                    <div>
+                        <a id="downloadStegoBtn" href="" download="stego_shield_output.png" class="ss-btn ss-btn-primary">
+                            <i class="bi bi-download"></i>Download Stego PNG
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quality Metrics Grid -->
+                <h3 class="ss-sub-heading">Calculated Quality Metrics</h3>
+                <div class="ss-metrics-3 mb-4">
+                    <div class="ss-metric is-ok">
+                        <span class="ss-metric-label">PSNR (dB)</span>
+                        <h4 class="ss-metric-value" id="resPSNR">0.00</h4>
+                        <span class="ss-metric-hint">Higher = less distortion</span>
+                    </div>
+                    <div class="ss-metric is-cyan">
+                        <span class="ss-metric-label">SSIM Index</span>
+                        <h4 class="ss-metric-value" id="resSSIM">1.0000</h4>
+                        <span class="ss-metric-hint">1.0 = structurally identical</span>
+                    </div>
+                    <div class="ss-metric is-warn">
+                        <span class="ss-metric-label">MSE</span>
+                        <h4 class="ss-metric-value" id="resMSE">0.0000</h4>
+                        <span class="ss-metric-hint">Pixel Variance</span>
+                    </div>
+                </div>
+
+                <!-- Extended Stats Summary -->
+                <h3 class="ss-sub-heading">Embedding Summary</h3>
+                <div class="ss-inset">
+                    <div class="ss-kv"><span>Used Capacity</span><strong id="resCapacityUsed">0%</strong></div>
+                    <div class="ss-kv"><span>Encrypted Payload Size</span><strong id="resPayloadBytes">0 Bytes</strong></div>
+                    <div class="ss-kv"><span>Modified Pixels Count</span><strong id="resModifiedPixels">0</strong></div>
+                    <div class="ss-kv"><span>Max Pixel Channel Change</span><strong id="resMaxDiff">±1</strong></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>

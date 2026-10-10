@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="ss-page-head ss-rise">
+    <div>
+        <span class="ss-eyebrow">05 — Steganalysis</span>
+        <h1 class="ss-page-title"><span class="ss-serif ss-iris">Steganalysis</span></h1>
+        <p class="ss-page-sub">Extract explainable statistical feature values (RGB statistics, LSB zero/one ratio, Shannon entropy, Chi-Square PoVs test) and compute suspicion scores.</p>
+    </div>
+    <div class="ss-page-meta">
+        <span class="ss-tag is-violet">χ² · Entropy</span>
+        <span class="ss-tag">Suspicion Score</span>
+    </div>
+</header>
+
+{% include "components/steganalysis_tab.html" %}
+{% endblock %}

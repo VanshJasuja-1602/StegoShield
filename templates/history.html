@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="ss-page-head ss-rise">
+    <div>
+        <span class="ss-eyebrow">06 — History</span>
+        <h1 class="ss-page-title">Session <span class="ss-serif ss-iris">operation</span> logs</h1>
+        <p class="ss-page-sub">Local session activity history table. In compliance with zero-retention security policies, passwords and secret messages are never saved to disk.</p>
+    </div>
+    <div class="ss-page-meta">
+        <span class="ss-tag is-cyan">Transient Session Data</span>
+    </div>
+</header>
+
+<section class="ss-panel ss-edge ss-rise">
+    <header class="ss-panel-head">
+        <h2 class="ss-panel-title">
+            <span class="ss-panel-title-icon"><i class="bi bi-list-task"></i></span>
+            Recent Steganographic Operations
+        </h2>
+        <span class="ss-tag is-ok"><span class="ss-dot"></span> Session Active</span>
+    </header>
+    <div class="ss-panel-body">
+        <div class="ss-table-wrap">
+            <table class="ss-table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Operation Type</th>
+                        <th scope="col">Filename</th>
+                        <th scope="col">Payload Size</th>
+                        <th scope="col">Quality (PSNR)</th>
+                        <th scope="col">Integrity Status</th>
+                        <th scope="col">Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="mono">01</td>
+                        <td><span class="ss-tag is-violet">Encode</span></td>
+                        <td class="mono">stego_shield_output.png</td>
+                        <td class="mono">52 Bytes</td>
+                        <td class="mono" style="color: var(--ok)">72.49 dB</td>
+                        <td><span class="badge bg-success">AUTHENTIC</span></td>
+                        <td>Just now</td>
+                    </tr>
+                    <tr>
+                        <td class="mono">02</td>
+                        <td><span class="ss-tag is-cyan">Decode</span></td>
+                        <td class="mono">stego_sample.png</td>
+                        <td class="mono">128 Bytes</td>
+                        <td class="mono ss-faint">N/A</td>
+                        <td><span class="badge bg-success">LIKELY UNMODIFIED</span></td>
+                        <td>5 mins ago</td>
+                    </tr>
+                    <tr>
+                        <td class="mono">03</td>
+                        <td><span class="ss-tag">Steganalysis</span></td>
+                        <td class="mono">suspect_img.png</td>
+                        <td class="mono ss-faint">N/A</td>
+                        <td class="mono ss-faint">N/A</td>
+                        <td><span class="badge bg-warning">LOW ANOMALY (9.99%)</span></td>
+                        <td>12 mins ago</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="ss-alert is-info mt-4">
+            <span class="ss-alert-icon"><i class="bi bi-shield-lock"></i></span>
+            <p class="pt-1"><strong class="ss-ink">Zero Data Retention Policy:</strong> Operation logs are preserved in memory during the active session. Closing the browser or restarting the Flask server automatically purges transient session states.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

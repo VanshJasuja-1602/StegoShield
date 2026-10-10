@@ -1,0 +1,110 @@
+<!-- Forensic Decode & Integrity Verification Panel -->
+<section class="ss-panel ss-edge ss-rise">
+    <header class="ss-panel-head">
+        <h2 class="ss-panel-title">
+            <span class="ss-panel-title-icon"><i class="bi bi-shield-check"></i></span>
+            Decode &amp; Verify Integrity
+        </h2>
+        <span class="ss-tag is-warn">AEAD MAC</span>
+    </header>
+    <div class="ss-panel-body">
+        <form id="extractForm" enctype="multipart/form-data">
+            <!-- Image Upload Dropzone -->
+            <div class="ss-field">
+                <label class="ss-label" for="stegoImageInput"><span class="ss-step">01</span> Upload Received Stego Image (PNG / BMP)</label>
+                <div class="dropzone-area" id="extractDropzone">
+                    <input type="file" id="stegoImageInput" name="stego_image" accept="image/png, image/bmp" class="d-none" required>
+                    <div class="dropzone-content" id="extractDropzonePrompt">
+                        <div class="ss-drop-icon"><i class="bi bi-file-earmark-lock"></i></div>
+                        <h3 class="ss-drop-title">Drag &amp; Drop Stego Image Here</h3>
+                        <p class="ss-drop-sub">Select PNG image to extract secret payload &amp; verify AEAD MAC tag integrity</p>
+                        <button type="button" class="ss-btn ss-btn-secondary ss-btn-sm"><i class="bi bi-folder2-open"></i> Select Stego Image</button>
+                    </div>
+                    <div class="dropzone-preview d-none" id="extractPreviewContainer">
+                        <div class="ss-specimen">
+                            <img id="stegoPreviewImg" src="" alt="Stego Upload Preview" class="max-h-200">
+                            <div class="laser-scan-line" id="extractLaserLine"></div>
+                            <div class="ss-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                        </div>
+                        <div class="ss-file-meta">
+                            <span id="stegoImageName" class="ss-file-chip">stego.png</span>
+                            <button type="button" class="ss-remove" id="removeStegoBtn" aria-label="Remove stego image"><i class="bi bi-x-lg"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="ss-field">
+                <label for="extractPasswordInput" class="ss-label"><span class="ss-step">02</span> Decryption Password</label>
+                <div class="ss-input-group">
+                    <span class="ss-input-icon"><i class="bi bi-key"></i></span>
+                    <input type="password" class="form-control cyber-input" id="extractPasswordInput" name="password" placeholder="Enter password used during encoding" required>
+                    <button class="toggle-password" type="button" data-target="extractPasswordInput" aria-label="Show or hide password">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="ss-btn ss-btn-primary ss-btn-lg ss-btn-block" id="extractSubmitBtn">
+                <i class="bi bi-unlock-fill"></i>Verify Integrity &amp; Extract Payload
+            </button>
+        </form>
+
+        <!-- Processing State -->
+        <div id="extractSpinner" class="d-none ss-empty pb-3">
+            <div class="cyber-spinner mx-auto mb-4"></div>
+            <h6>Executing Digital Forensic Verification...</h6>
+            <div class="ss-pipeline">
+                <span>1. Reading Image</span><span>2. Header Check</span><span>3. AEAD MAC Verification</span><span>4. Decrypting</span>
+            </div>
+        </div>
+
+        <!-- Extraction Results -->
+        <div id="extractResultContainer" class="mt-4 d-none">
+
+            <!-- SUCCESS: recovered payload -->
+            <div id="extractSuccessCard" class="ss-recovered d-none mb-3">
+                <div class="ss-recovered-head">
+                    <span><i class="bi bi-shield-check fs-5"></i>Status: <span id="extractStatusSuccessLabel">Likely Unmodified</span></span>
+                    <span class="badge bg-success" id="extractLsbBadge">1 LSB Bit</span>
+                </div>
+                <div class="ss-recovered-body">
+                    <span class="ss-sub-heading">Decrypted Secret Message</span>
+                    <div class="position-relative">
+                        <textarea id="decryptedMessageOutput" class="form-control cyber-input font-monospace" rows="5" readonly aria-label="Decrypted secret message"></textarea>
+                        <button type="button" class="ss-btn ss-btn-secondary ss-btn-sm ss-copy-btn" id="copyMessageBtn">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAMPER / ERROR -->
+            <div id="extractErrorCard" class="ss-alert is-bad d-none mb-3" role="alert">
+                <span class="ss-alert-icon"><i class="bi bi-exclamation-octagon"></i></span>
+                <div>
+                    <h6 id="extractErrorStatusTitle">Integrity Verification Failed</h6>
+                    <p id="extractErrorText">Authentication failed: Incorrect password or modified stego image bits.</p>
+                    <div class="ss-alert-foot">
+                        <i class="bi bi-shield-x me-1"></i>
+                        AES-256-GCM AEAD Tag check rejected bit modification or wrong decryption key.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Limitations -->
+            <div class="ss-alert is-info">
+                <span class="ss-alert-icon"><i class="bi bi-info-circle"></i></span>
+                <div>
+                    <h6>Steganographic Integrity Limitations</h6>
+                    <p>
+                        Spatial LSB steganography relies on exact pixel bit preservation. Lossy operations (JPEG recompression, Gaussian blur filtering, spatial scaling/resizing, or cropping) destroy or shift fragile LSB bitplanes. StegoShield reliably detects payload destruction via AES-256-GCM MAC tags, but original secret payloads cannot be mathematically recovered after lossy image alterations.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="ss-page-head ss-rise">
+    <div>
+        <span class="ss-eyebrow">03 — Decode</span>
+        <h1 class="ss-page-title">Decode &amp; extract the <span class="ss-serif ss-iris">hidden</span> message</h1>
+        <p class="ss-page-sub">Upload a stego PNG image and enter your secret password to extract and verify payload integrity.</p>
+    </div>
+    <div class="ss-page-meta">
+        <span class="ss-tag is-warn">AEAD MAC</span>
+        <span class="ss-tag">AES-256-GCM</span>
+    </div>
+</header>
+
+<div class="ss-workspace ss-workspace--aside">
+    {% include "components/extract_tab.html" %}
+
+    <aside class="ss-panel ss-rise" style="--d:1">
+        <div class="ss-panel-body">
+            <h2 class="ss-sub-heading">Verification Pipeline</h2>
+            <ol class="ss-verify-steps">
+                <li><span class="ss-vs-dot"><i class="bi bi-image"></i></span><div><h6>Reading Image</h6><p>Pixels loaded losslessly in memory</p></div></li>
+                <li><span class="ss-vs-dot"><i class="bi bi-upc-scan"></i></span><div><h6>Header Check</h6><p>Magic marker &amp; payload length</p></div></li>
+                <li><span class="ss-vs-dot"><i class="bi bi-patch-check"></i></span><div><h6>AEAD MAC Verification</h6><p>16-byte GCM authentication tag</p></div></li>
+                <li><span class="ss-vs-dot"><i class="bi bi-unlock"></i></span><div><h6>Decrypting</h6><p>AES-256-GCM with PBKDF2 key</p></div></li>
+            </ol>
+        </div>
+    </aside>
+</div>
+{% endblock %}

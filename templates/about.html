@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="ss-page-head ss-rise">
+    <div>
+        <span class="ss-eyebrow">07 — About</span>
+        <h1 class="ss-page-title">Technical architecture &amp; <span class="ss-serif ss-iris">project</span> overview</h1>
+        <p class="ss-page-sub">Technical specifications, cryptographic protocol header layout, and core security architecture for StegoShield.</p>
+    </div>
+    <div class="ss-page-meta">
+        <span class="ss-tag is-cyan">Project Overview</span>
+    </div>
+</header>
+
+<!-- Technology Stack -->
+<div class="ss-features mb-5" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+    <article class="ss-feature ss-rise" style="--d:0; min-height: 0;" data-spotlight>
+        <div class="ss-feature-top mb-4">
+            <div class="ss-feature-icon"><i class="bi bi-shield-lock"></i></div>
+            <span class="ss-tag is-violet">Crypto</span>
+        </div>
+        <h3>Cryptographic Core</h3>
+        <p>AES-256-GCM authenticated encryption providing 128-bit MAC tag verification and PBKDF2HMAC SHA-256 password key derivation (100,000 iterations).</p>
+    </article>
+    <article class="ss-feature is-cyan ss-rise" style="--d:1; min-height: 0;" data-spotlight>
+        <div class="ss-feature-top mb-4">
+            <div class="ss-feature-icon"><i class="bi bi-images"></i></div>
+            <span class="ss-tag is-cyan">LSB Engine</span>
+        </div>
+        <h3>LSB Steganography Engine</h3>
+        <p>Custom spatial RGB least-significant bitplane embedding for PNG lossless images with custom magic protocol header markers.</p>
+    </article>
+    <article class="ss-feature is-amber ss-rise" style="--d:2; min-height: 0;" data-spotlight>
+        <div class="ss-feature-top mb-4">
+            <div class="ss-feature-icon"><i class="bi bi-activity"></i></div>
+            <span class="ss-tag is-warn">Analytics</span>
+        </div>
+        <h3>Steganalysis &amp; Analytics</h3>
+        <p>Calculates MSE, PSNR, SSIM distortion metrics along with Chi-Square (χ²) Pairs-of-Values test and Shannon entropy analysis.</p>
+    </article>
+</div>
+
+<!-- Protocol Byte Map -->
+<section class="ss-panel ss-edge ss-rise">
+    <header class="ss-panel-head">
+        <h2 class="ss-panel-title">
+            <span class="ss-panel-title-icon"><i class="bi bi-diagram-2"></i></span>
+            StegoShield Encrypted Bitstream Header Layout
+        </h2>
+        <span class="ss-tag is-cyan">Protocol Spec</span>
+    </header>
+    <div class="ss-panel-body">
+        <div class="ss-bytemap mb-4">
+            <div class="ss-byte" style="--byte: var(--violet)"><span>Magic Marker</span><strong>b"STEG" (4 Bytes)</strong></div>
+            <div class="ss-byte" style="--byte: var(--violet)"><span>Payload Length</span><strong>uint32 (4 Bytes)</strong></div>
+            <div class="ss-byte" style="--byte: var(--cyan)"><span>PBKDF2 Salt</span><strong>16 Bytes</strong></div>
+            <div class="ss-byte" style="--byte: var(--cyan)"><span>AES Nonce</span><strong>12 Bytes</strong></div>
+            <div class="ss-byte" style="--byte: var(--warn)"><span>AES-256-GCM Ciphertext + Tag</span><strong>Variable + 16B Tag</strong></div>
+        </div>
+
+        <div class="ss-two">
+            <div class="ss-inset small ss-muted">
+                <strong class="ss-ink d-block mb-1">Header Size Overhead</strong>
+                Total metadata overhead per stego image is 52 bytes (8B stego header + 44B crypto header).
+            </div>
+            <div class="ss-inset small ss-muted">
+                <strong class="ss-ink d-block mb-1">Zero-Persistence Mandate</strong>
+                Passwords and plaintext messages are processed in-memory (<code>io.BytesIO</code>) and purged after execution.
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

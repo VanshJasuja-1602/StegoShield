@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="ss-page-head ss-rise">
+    <div>
+        <span class="ss-eyebrow">02 — Encode</span>
+        <h1 class="ss-page-title">Encode &amp; hide a <span class="ss-serif ss-iris">secret</span> message</h1>
+        <p class="ss-page-sub">Encrypt text payload with password-derived AES-256-GCM key and hide into PNG cover image pixels.</p>
+    </div>
+    <div class="ss-page-meta">
+        <span class="ss-tag is-violet">AES-256-GCM</span>
+        <span class="ss-tag">PBKDF2 · SHA-256</span>
+        <span class="ss-tag is-cyan">RGB LSB</span>
+    </div>
+</header>
+
+{% include "components/embed_tab.html" %}
+{% endblock %}

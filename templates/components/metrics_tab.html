@@ -1,0 +1,112 @@
+<!-- Image Quality Comparison Component -->
+<div class="ss-workspace ss-workspace--narrow-left">
+    <!-- Inputs -->
+    <section class="ss-panel ss-edge ss-rise">
+        <header class="ss-panel-head">
+            <h2 class="ss-panel-title">
+                <span class="ss-panel-title-icon"><i class="bi bi-sliders"></i></span>
+                Comparison Inputs
+            </h2>
+            <span class="ss-tag is-warn">Cover + Stego</span>
+        </header>
+        <div class="ss-panel-body">
+            <form id="compareForm" enctype="multipart/form-data">
+                <div class="ss-field">
+                    <label class="ss-label" for="compareCoverInput"><span class="ss-step">01</span> Select Original Cover PNG</label>
+                    <div class="dropzone-area" id="compareCoverDropzone">
+                        <input type="file" id="compareCoverInput" name="cover_image" accept="image/png, image/bmp" class="d-none" required>
+                        <div class="dropzone-content is-compact" id="compareCoverPrompt">
+                            <div class="ss-drop-icon is-compact"><i class="bi bi-file-earmark-image"></i></div>
+                            <h3 class="ss-drop-title mb-0">Select Original Cover PNG</h3>
+                        </div>
+                        <div class="dropzone-preview d-none" id="compareCoverPreview">
+                            <div class="ss-specimen"><img id="compareCoverImg" src="" alt="Cover Preview" class="max-h-150"></div>
+                            <div class="ss-file-meta"><span id="compareCoverName" class="ss-file-chip">cover.png</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ss-field">
+                    <label class="ss-label" for="compareStegoInput"><span class="ss-step">02</span> Select Stego PNG Output</label>
+                    <div class="dropzone-area" id="compareStegoDropzone">
+                        <input type="file" id="compareStegoInput" name="stego_image" accept="image/png, image/bmp" class="d-none" required>
+                        <div class="dropzone-content is-compact" id="compareStegoPrompt">
+                            <div class="ss-drop-icon is-compact"><i class="bi bi-file-earmark-lock"></i></div>
+                            <h3 class="ss-drop-title mb-0">Select Modified Stego PNG</h3>
+                        </div>
+                        <div class="dropzone-preview d-none" id="compareStegoPreview">
+                            <div class="ss-specimen"><img id="compareStegoImg" src="" alt="Stego Preview" class="max-h-150"></div>
+                            <div class="ss-file-meta"><span id="compareStegoName" class="ss-file-chip">stego.png</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="ss-btn ss-btn-primary ss-btn-lg ss-btn-block" id="compareSubmitBtn">
+                    <i class="bi bi-calculator"></i>Compute Quality Distortion Metrics
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Report -->
+    <section class="ss-panel ss-output ss-rise" style="--d:1">
+        <header class="ss-panel-head">
+            <h2 class="ss-panel-title">
+                <span class="ss-panel-title-icon is-cyan"><i class="bi bi-bar-chart-steps"></i></span>
+                Comparison Report
+            </h2>
+            <span class="ss-tag is-cyan">MSE · PSNR · SSIM</span>
+        </header>
+        <div class="ss-panel-body">
+
+            <div id="compareSpinner" class="d-none ss-empty">
+                <div class="cyber-spinner mx-auto mb-4"></div>
+                <h6>Computing Pixel-by-Pixel Matrix Differences...</h6>
+                <p>Evaluating MSE, logarithmic PSNR (dB), and structural similarity (SSIM)</p>
+            </div>
+
+            <!-- Placeholder (hidden by CSS once results or the spinner show) -->
+            <div class="ss-empty ss-compare-empty">
+                <div class="ss-empty-art"><i class="bi bi-layers"></i></div>
+                <h6>No Comparison Report Generated</h6>
+                <p>Select the original cover PNG and its stego output on the left, then click Compute Quality Distortion Metrics.</p>
+            </div>
+
+            <div id="compareResultContainer" class="d-none">
+                <div class="ss-metrics-3 mb-4">
+                    <div class="ss-metric is-ok">
+                        <span class="ss-metric-label">PSNR (dB)</span>
+                        <h4 class="ss-metric-value" id="cmpPSNR">0.00 dB</h4>
+                        <span class="ss-metric-hint" id="psnrQualityBadge">Higher = less distortion</span>
+                    </div>
+                    <div class="ss-metric is-cyan">
+                        <span class="ss-metric-label">SSIM Index</span>
+                        <h4 class="ss-metric-value" id="cmpSSIM">1.0000</h4>
+                        <span class="ss-metric-hint" id="ssimQualityBadge">1.0 = structurally identical</span>
+                    </div>
+                    <div class="ss-metric is-warn">
+                        <span class="ss-metric-label">Mean Squared Error</span>
+                        <h4 class="ss-metric-value" id="cmpMSE">0.0000</h4>
+                        <span class="ss-metric-hint" id="mseQualityBadge">Closer to 0 = lower distortion</span>
+                    </div>
+                </div>
+
+                <h3 class="ss-sub-heading">Spatial Distortion Metrics</h3>
+                <div class="ss-inset mb-4">
+                    <div class="ss-kv"><span>Image Dimensions</span><strong id="cmpDims">0 x 0 px</strong></div>
+                    <div class="ss-kv"><span>Total Pixel Elements</span><strong id="cmpTotalPx">0</strong></div>
+                    <div class="ss-kv"><span>Modified Pixels Count</span><strong id="cmpModPx">0</strong></div>
+                    <div class="ss-kv"><span>Percentage of Image Modified</span><strong id="cmpModPct">0.00%</strong></div>
+                </div>
+
+                <h3 class="ss-sub-heading">Quality Metric Interpretations</h3>
+                <div class="ss-inset ss-notes">
+                    <p id="expPsnrText">PSNR &gt; 40 dB indicates high visual quality; LSB steganography typically yields PSNR &gt; 70 dB.</p>
+                    <p id="expSsimText">SSIM values range from 0 to 1. Values near 1.0000 prove structural preservation.</p>
+                    <p id="expMseText">MSE measures raw pixel-by-pixel squared differences across all color channels.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>

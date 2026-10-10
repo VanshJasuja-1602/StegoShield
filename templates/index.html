@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- ==========================================================================
+     HERO
+     ========================================================================== -->
+<section class="ss-hero">
+    <div class="ss-grid-field" aria-hidden="true"></div>
+
+    <div class="ss-hero-grid">
+        <!-- Copy -->
+        <div>
+            <div class="ss-hero-badge ss-rise" style="--d:0">
+                <b><i class="bi bi-shield-check"></i> Secure</b>
+                <span>Advanced Steganography Security Platform</span>
+            </div>
+
+            <h1 class="ss-hero-title ss-rise" style="--d:1">
+                <span class="ss-line">Hide. Protect. Verify.</span>
+                <span class="ss-line ss-line--soft">Inside every <span class="ss-serif ss-iris">image.</span></span>
+            </h1>
+
+            <p class="ss-hero-lead ss-rise" style="--d:2">
+                Secure your messages with <strong>AES-256 encryption</strong>, hide them inside images, and detect tampering or suspicious patterns in real time.
+            </p>
+
+            <div class="ss-hero-actions ss-rise" style="--d:3">
+                <a href="/encode" class="ss-btn ss-btn-primary ss-btn-lg">
+                    <i class="bi bi-lock-fill"></i>
+                    <span>Encode Secret Message</span>
+                </a>
+                <a href="/decode" class="ss-btn ss-btn-secondary ss-btn-lg">
+                    <i class="bi bi-key-fill"></i>
+                    <span>Decode Secret Message</span>
+                </a>
+                <a href="/steganalysis" class="ss-btn ss-btn-ghost ss-btn-lg">
+                    <span>Run Steganalysis</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="ss-hero-status ss-rise" style="--d:4">
+                <span><span class="ss-dot"></span> Encryption Active</span>
+                <span><span class="ss-dot"></span> Integrity Protected</span>
+                <span><span class="ss-dot"></span> Tamper Detection Ready</span>
+            </div>
+        </div>
+
+        <!-- Forensic comparison instrument -->
+        <div class="ss-instrument-wrap ss-rise" style="--d:2">
+            <div class="ss-instrument">
+                <div class="ss-instrument-bar">
+                    <span><span class="ss-dot is-violet"></span> Forensic compare</span>
+                    <span class="ss-file">cover.png &nbsp;⇄&nbsp; stego.png</span>
+                </div>
+
+                <div class="ss-compare" id="heroCompare">
+                    <canvas id="heroCoverCanvas" width="640" height="440" aria-hidden="true"></canvas>
+                    <canvas id="heroStegoCanvas" class="ss-compare-top" width="640" height="440" aria-hidden="true"></canvas>
+                    <div class="ss-compare-scan" aria-hidden="true"></div>
+
+                    <span class="ss-annot is-cover" aria-hidden="true">RGB · 8 bit / channel</span>
+                    <span class="ss-annot is-payload" aria-hidden="true">Encrypted payload · LSB</span>
+                    <span class="ss-annot is-natural" aria-hidden="true">Natural bit-plane texture</span>
+
+                    <span class="ss-compare-label is-left" aria-hidden="true"><span class="ss-swatch"></span>Original<span class="ss-sm-hide">&nbsp;Image</span></span>
+                    <span class="ss-compare-label is-right" aria-hidden="true"><span class="ss-swatch"></span>Stego<span class="ss-sm-hide">&nbsp;Image</span>&nbsp;· LSB</span>
+
+                    <div class="ss-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+                    <input type="range" class="ss-compare-range" id="heroCompareRange" min="0" max="100" value="50" step="0.5"
+                           aria-label="Drag to compare the original image with the stego image's least-significant-bit plane">
+                    <div class="ss-compare-divider" aria-hidden="true">
+                        <span class="ss-compare-knob"><i class="bi bi-chevron-left"></i><i class="bi bi-chevron-right"></i></span>
+                    </div>
+                </div>
+
+                <div class="ss-instrument-foot">
+                    <div class="ss-readout"><span>Cipher</span><strong>AES-256-GCM</strong></div>
+                    <div class="ss-readout"><span>Embedding</span><strong>1–2 LSB / ch</strong></div>
+                    <div class="ss-readout"><span>Integrity</span><strong>AEAD MAC tag</strong></div>
+                </div>
+            </div>
+            <p class="ss-instrument-note">Illustrative specimen — drag the divider to reveal the hidden bit-plane.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     CORE CAPABILITIES
+     ========================================================================== -->
+<section class="ss-section" id="capabilities">
+    <div class="ss-section-head ss-reveal">
+        <div>
+            <span class="ss-eyebrow">Core Security Capabilities</span>
+            <h2 class="ss-section-title">Three tools. <span class="ss-serif ss-muted">One invisible layer.</span></h2>
+            <p class="ss-section-sub">Military-grade cryptographic algorithms combined with statistical image inspection.</p>
+        </div>
+    </div>
+
+    <div class="ss-features">
+        <!-- Encode & Decode -->
+        <article class="ss-feature ss-reveal" style="--d:0" data-spotlight>
+            <div class="ss-feature-top">
+                <div class="ss-feature-icon"><i class="bi bi-shield-lock"></i></div>
+                <span class="ss-tag is-violet">AES-256-GCM + LSB</span>
+            </div>
+            <span class="ss-feature-index">01</span>
+            <h3>Encode &amp; Decode</h3>
+            <p>Encrypt a message with AES-256-GCM (PBKDF2HMAC SHA-256 key) and hide it in an image's RGB least-significant bits, then extract it again with the password.</p>
+            <div class="ss-motif ss-motif--bits" aria-hidden="true">
+                <span>01101001 11010010 00101101 10110100 01001011 11100010 10010110 00111010 01101001 11010010 00101101 10110100 01001011 11100010 10010110 00111010 01101001 11010010 00101101 10110100 01001011 11100010 10010110 00111010 01101001 11010010 00101101 10110100 01001011 11100010 10010110 00111010 01101001 11010010 00101101 10110100 01001011 11100010 10010110 00111010</span>
+            </div>
+            <a href="/encode" class="ss-feature-link">Open Encode <i class="bi bi-arrow-right"></i></a>
+        </article>
+
+        <!-- Tamper Detection -->
+        <article class="ss-feature is-amber ss-reveal" style="--d:1" data-spotlight>
+            <div class="ss-feature-top">
+                <div class="ss-feature-icon"><i class="bi bi-shield-exclamation"></i></div>
+                <span class="ss-tag is-warn">AEAD MAC</span>
+            </div>
+            <span class="ss-feature-index">02</span>
+            <h3>Tamper Detection</h3>
+            <p>AEAD MAC authentication tags immediately flag bit flips, image resizing, cropping, lossy compression, or pixel filtering alterations.</p>
+            <div class="ss-motif ss-motif--scan" aria-hidden="true"></div>
+            <a href="/tamper-detection" class="ss-feature-link">Open Tamper Detection <i class="bi bi-arrow-right"></i></a>
+        </article>
+
+        <!-- Steganalysis -->
+        <article class="ss-feature is-cyan ss-reveal" style="--d:2" data-spotlight>
+            <div class="ss-feature-top">
+                <div class="ss-feature-icon"><i class="bi bi-activity"></i></div>
+                <span class="ss-tag is-cyan">χ² · Entropy</span>
+            </div>
+            <span class="ss-feature-index">03</span>
+            <h3>Steganalysis</h3>
+            <p>Inspect any image for statistical LSB anomalies (RGB statistics, bit ratio, Shannon entropy, Chi-Square pairs-of-values) and get a suspicion score.</p>
+            <div class="ss-motif ss-motif--pixels" aria-hidden="true"></div>
+            <a href="/steganalysis" class="ss-feature-link">Open Steganalysis <i class="bi bi-arrow-right"></i></a>
+        </article>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     HOW IT WORKS
+     ========================================================================== -->
+<section class="ss-section pt-0">
+    <div class="ss-panel ss-edge ss-protocol ss-reveal">
+        <div class="ss-section-head">
+            <div>
+                <span class="ss-eyebrow">Workflow Protocol</span>
+                <h2 class="ss-section-title">How StegoShield works</h2>
+            </div>
+            <p class="ss-section-sub">Five-step end-to-end confidential communication lifecycle.</p>
+        </div>
+
+        <div class="ss-protocol-rail">
+            <div class="ss-step-card">
+                <div class="ss-step-node"><i class="bi bi-file-earmark-image"></i></div>
+                <span class="ss-step-num">STEP 01</span>
+                <h4>Upload Image</h4>
+                <p>Select cover PNG image</p>
+            </div>
+            <div class="ss-step-card">
+                <div class="ss-step-node"><i class="bi bi-shield-lock"></i></div>
+                <span class="ss-step-num">STEP 02</span>
+                <h4>Encrypt Payload</h4>
+                <p>AES-256-GCM + PBKDF2</p>
+            </div>
+            <div class="ss-step-card">
+                <div class="ss-step-node"><i class="bi bi-lightning-charge"></i></div>
+                <span class="ss-step-num">STEP 03</span>
+                <h4>LSB Embedding</h4>
+                <p>Modify spatial LSB bits</p>
+            </div>
+            <div class="ss-step-card">
+                <div class="ss-step-node"><i class="bi bi-shield-check"></i></div>
+                <span class="ss-step-num">STEP 04</span>
+                <h4>Verify Integrity</h4>
+                <p>AEAD MAC check</p>
+            </div>
+            <div class="ss-step-card">
+                <div class="ss-step-node"><i class="bi bi-key"></i></div>
+                <span class="ss-step-num">STEP 05</span>
+                <h4>Secure Extract</h4>
+                <p>Restores original payload</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="ss-page-head ss-rise">
+    <div>
+        <span class="ss-eyebrow">04 — Tamper Detection</span>
+        <h1 class="ss-page-title">Tamper <span class="ss-serif ss-iris">detection</span></h1>
+        <p class="ss-page-sub">Verify stego image authenticity and detect pixel alterations using AES-256-GCM AEAD MAC authentication tags.</p>
+    </div>
+    <div class="ss-page-meta">
+        <span class="ss-tag is-violet">AEAD MAC</span>
+        <span class="ss-tag is-ok">Integrity Guard</span>
+    </div>
+</header>
+
+<div class="ss-workspace ss-workspace--aside">
+    <!-- Extraction & Integrity Checker -->
+    {% include "components/extract_tab.html" %}
+
+    <aside class="ss-panel ss-rise" style="--d:1">
+        <div class="ss-panel-body">
+            <h2 class="ss-sub-heading">Integrity Verification</h2>
+            <ol class="ss-verify-steps">
+                <li>
+                    <span class="ss-vs-dot"><i class="bi bi-shield-check"></i></span>
+                    <div>
+                        <h6>AEAD MAC Verification</h6>
+                        <p>16-byte GCM tag detects even 1-bit pixel modifications</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="ss-vs-dot"><i class="bi bi-upc-scan"></i></span>
+                    <div>
+                        <h6>Header Integrity</h6>
+                        <p>Validates StegoShield magic protocol markers</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="ss-vs-dot"><i class="bi bi-slash-circle"></i></span>
+                    <div>
+                        <h6>Tamper Alert System</h6>
+                        <p>Instant warning flags any corruption or alteration</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </aside>
+</div>
+{% endblock %}

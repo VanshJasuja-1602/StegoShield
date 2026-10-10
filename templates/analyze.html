@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="ss-page-head ss-rise">
+    <div>
+        <span class="ss-eyebrow">04 — Image Comparison</span>
+        <h1 class="ss-page-title">Image <span class="ss-serif ss-iris">comparison</span></h1>
+        <p class="ss-page-sub">Compare an original cover image with its stego output to measure exact MSE, PSNR (dB) and SSIM distortion from the raw pixel arrays.</p>
+    </div>
+    <div class="ss-page-meta">
+        <span class="ss-tag is-ok">MSE · PSNR · SSIM</span>
+    </div>
+</header>
+
+{% include "components/metrics_tab.html" %}
+{% endblock %}

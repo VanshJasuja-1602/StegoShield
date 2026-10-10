@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StegoShield</title>
+    <meta name="color-scheme" content="dark light">
+    <!-- Apply saved theme before first paint (presentation only) -->
+    <script>
+        (function () {
+            var root = document.documentElement;
+            root.classList.add('js');
+            try {
+                var saved = localStorage.getItem('ss-theme');
+                if (saved === 'light' || saved === 'dark') {
+                    root.setAttribute('data-theme', saved);
+                    root.setAttribute('data-bs-theme', saved);
+                }
+            } catch (e) { /* storage unavailable: keep default dark theme */ }
+        })();
+    </script>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- StegoShield Design System -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="cyber-body">
+
+    <!-- Atmosphere: ambient light, constellation field, grain -->
+    <div class="ss-atmosphere" aria-hidden="true">
+        <div class="ss-light ss-light--violet"></div>
+        <div class="ss-light ss-light--cyan"></div>
+        <div class="ss-light ss-light--deep"></div>
+    </div>
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+    <div class="ss-grain" aria-hidden="true"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-xl ss-nav" id="ssNav">
+        <div class="ss-shell">
+            <a class="ss-brand" href="/" aria-label="StegoShield home">
+                <span class="ss-brand-mark"><i class="bi bi-shield-lock-fill"></i></span>
+                <span class="ss-brand-word"><b>Stego</b><span>Shield</span></span>
+            </a>
+
+            <button class="ss-icon-btn ss-nav-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list fs-5"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="ss-nav-links me-xl-auto">
+                    <li>
+                        <a class="ss-nav-link {% if active_page == 'home' %}active{% endif %}" href="/" {% if active_page == 'home' %}aria-current="page"{% endif %}>
+                            <i class="bi bi-grid-1x2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ss-nav-link {% if active_page == 'encode' %}active{% endif %}" href="/encode" {% if active_page == 'encode' %}aria-current="page"{% endif %}>
+                            <i class="bi bi-lock"></i> Encode
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ss-nav-link {% if active_page == 'decode' %}active{% endif %}" href="/decode" {% if active_page == 'decode' %}aria-current="page"{% endif %}>
+                            <i class="bi bi-key"></i> Decode
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ss-nav-link {% if active_page == 'tamper' %}active{% endif %}" href="/tamper-detection" {% if active_page == 'tamper' %}aria-current="page"{% endif %}>
+                            <i class="bi bi-shield-exclamation"></i> Tamper Detection
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ss-nav-link {% if active_page == 'steganalysis' %}active{% endif %}" href="/steganalysis" {% if active_page == 'steganalysis' %}aria-current="page"{% endif %}>
+                            <i class="bi bi-activity"></i> Steganalysis
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ss-nav-link {% if active_page == 'history' %}active{% endif %}" href="/history" {% if active_page == 'history' %}aria-current="page"{% endif %}>
+                            <i class="bi bi-clock-history"></i> History
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ss-nav-link {% if active_page == 'about' %}active{% endif %}" href="/about" {% if active_page == 'about' %}aria-current="page"{% endif %}>
+                            <i class="bi bi-info-circle"></i> About
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="ss-nav-actions">
+                    <button type="button" class="ss-icon-btn ss-theme-toggle" id="themeToggle" aria-label="Switch colour theme" title="Switch theme">
+                        <i class="bi bi-moon-stars"></i>
+                        <i class="bi bi-sun"></i>
+                    </button>
+                    <a href="/encode" class="ss-btn ss-btn-primary ss-btn-sm">
+                        <span>Get Started</span><i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="ss-main">
+        <div class="ss-shell">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ss-footer">
+        <div class="ss-shell">
+            <div class="ss-footer-grid">
+                <div>
+                    <a class="ss-brand" href="/" aria-label="StegoShield home">
+                        <span class="ss-brand-mark"><i class="bi bi-shield-lock-fill"></i></span>
+                        <span class="ss-brand-word"><b>Stego</b><span>Shield</span></span>
+                    </a>
+                    <p class="ss-footer-statement">Cybersecurity &amp; steganalysis platform — authenticated encryption hidden in the invisible layer of every pixel.</p>
+                    <span class="ss-tag is-ok"><span class="ss-dot"></span> AES-256-GCM • LSB Active</span>
+                </div>
+                <div>
+                    <h6>Workspace</h6>
+                    <ul>
+                        <li><a href="/encode">Encode</a></li>
+                        <li><a href="/decode">Decode</a></li>
+                        <li><a href="/tamper-detection">Tamper Detection</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h6>Resources</h6>
+                    <ul>
+                        <li><a href="/">Dashboard</a></li>
+                        <li><a href="/steganalysis">Steganalysis</a></li>
+                        <li><a href="/history">History</a></li>
+                        <li><a href="/about">About</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ss-footer-bottom">
+                <span><i class="bi bi-shield-check"></i> StegoShield • Cybersecurity &amp; Steganalysis Platform</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Background constellation field -->
+    <script src="{{ url_for('static', filename='js/bg-animation.js') }}"></script>
+    <!-- Custom Chart & Main Application JS -->
+    <script src="{{ url_for('static', filename='js/chart_config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Presentation-only enhancements (theme, nav state, comparison, reveals) -->
+    <script src="{{ url_for('static', filename='js/ui.js') }}"></script>
+</body>
+</html>

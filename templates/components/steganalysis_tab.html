@@ -1,0 +1,142 @@
+<!-- Steganalysis Laboratory -->
+<div class="ss-workspace ss-workspace--narrow-left">
+    <!-- Inspection Controls -->
+    <div class="ss-stack">
+        <section class="ss-panel ss-edge ss-rise">
+            <header class="ss-panel-head">
+                <h2 class="ss-panel-title">
+                    <span class="ss-panel-title-icon"><i class="bi bi-activity"></i></span>
+                    Steganalysis Inputs
+                </h2>
+                <span class="ss-tag is-violet">PNG · JPEG · BMP</span>
+            </header>
+            <div class="ss-panel-body">
+                <form id="analyzeForm" enctype="multipart/form-data">
+                    <div class="ss-field">
+                        <label class="ss-label" for="suspectImageInput"><span class="ss-step">01</span> Select Suspect Image to Analyze</label>
+                        <div class="dropzone-area" id="analyzeDropzone">
+                            <input type="file" id="suspectImageInput" name="image" accept="image/png, image/jpeg, image/bmp" class="d-none" required>
+                            <div class="dropzone-content" id="analyzeDropzonePrompt">
+                                <div class="ss-drop-icon"><i class="bi bi-search"></i></div>
+                                <h3 class="ss-drop-title">Drag &amp; Drop Suspect Image</h3>
+                                <p class="ss-drop-sub">Upload any image to test for statistical LSB anomalies</p>
+                                <button type="button" class="ss-btn ss-btn-secondary ss-btn-sm"><i class="bi bi-folder2-open"></i> Choose Image</button>
+                                <div class="ss-drop-formats"><span class="ss-tag">PNG</span><span class="ss-tag">JPEG</span><span class="ss-tag">BMP</span></div>
+                            </div>
+                            <div class="dropzone-preview d-none" id="analyzePreviewContainer">
+                                <div class="ss-specimen">
+                                    <img id="suspectPreviewImg" src="" alt="Suspect Image Preview" class="max-h-200">
+                                    <div class="ss-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                                </div>
+                                <div class="ss-file-meta">
+                                    <span id="suspectImageName" class="ss-file-chip">suspect.png</span>
+                                    <button type="button" class="ss-remove" id="removeSuspectBtn" aria-label="Remove suspect image"><i class="bi bi-x-lg"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="ss-btn ss-btn-violet ss-btn-lg ss-btn-block" id="analyzeSubmitBtn">
+                        <i class="bi bi-cpu"></i>Run Baseline Steganalysis Scan
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section class="ss-panel ss-rise" style="--d:1">
+            <div class="ss-panel-body">
+                <h3 class="ss-sub-heading">Statistical Inspection Features</h3>
+                <ul class="ss-list">
+                    <li><i class="bi bi-palette"></i><span><strong>RGB Statistics:</strong> Channel mean and standard deviation.</span></li>
+                    <li><i class="bi bi-toggles"></i><span><strong>LSB 0/1 Ratio:</strong> Tests 50/50 LSB bit balance (R<sub>01</sub> ≈ 0.5000).</span></li>
+                    <li><i class="bi bi-bar-chart-steps"></i><span><strong>Chi-Square (χ²) PoVs:</strong> Adjacent pixel pair frequency equalization.</span></li>
+                    <li><i class="bi bi-grid-3x3"></i><span><strong>Neighbor Correlation:</strong> Spatial LSB coherence degradation.</span></li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <!-- Report -->
+    <section class="ss-panel ss-output ss-rise" style="--d:1">
+        <header class="ss-panel-head">
+            <h2 class="ss-panel-title">
+                <span class="ss-panel-title-icon is-cyan"><i class="bi bi-radar"></i></span>
+                Steganalysis Report
+            </h2>
+            <span id="riskBadge" class="badge bg-secondary">Awaiting Input</span>
+        </header>
+        <div class="ss-panel-body">
+
+            <!-- Placeholder -->
+            <div id="analyzePlaceholder" class="ss-empty">
+                <div class="ss-empty-art"><i class="bi bi-shield-slash"></i></div>
+                <h6>No Steganalysis Report Generated</h6>
+                <p>Upload an image on the left and click Run Baseline Steganalysis Scan to extract statistical features and compute suspicion scores.</p>
+            </div>
+
+            <!-- Loading -->
+            <div id="analyzeSpinner" class="d-none ss-empty">
+                <div class="cyber-spinner mx-auto mb-4"></div>
+                <h6>Scanning LSB Bitplanes &amp; Chi-Square Frequencies...</h6>
+                <div class="ss-pipeline">
+                    <span>Shannon Entropy</span><span>Pairs-of-Values</span><span>Neighbor Correlation</span>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="analyzeResultContainer" class="d-none">
+
+                <!-- Suspicion Score -->
+                <div class="ss-score mb-4" id="ssScore">
+                    <div class="ss-gauge-wrap" aria-hidden="true">
+                        <div class="ss-gauge" id="ssGauge"></div>
+                        <div class="ss-gauge-ticks"></div>
+                        <div class="ss-gauge-center"><i class="bi bi-radar"></i><small>Score</small></div>
+                    </div>
+                    <div>
+                        <span class="ss-eyebrow ss-eyebrow--plain">Steganography Detection Risk</span>
+                        <h3 class="ss-score-value" id="suspicionScoreText">0.0 / 100</h3>
+                        <span class="badge px-3 py-2 fs-6" id="riskLevelBadge">LOW</span>
+                        <div class="ss-score-side">
+                            <div><span>LSB Zero / One Ratio</span><strong id="lblZeroOneRatio">0.5000</strong></div>
+                            <div><span>Shannon Entropy</span><strong id="lblEntropy">0.0000</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Values -->
+                <h3 class="ss-sub-heading">Extracted Statistical Features</h3>
+                <div class="ss-two mb-4">
+                    <div class="ss-inset">
+                        <strong class="d-block mb-3 ss-ink small"><i class="bi bi-palette me-2 ss-faint"></i>RGB Channel Statistics</strong>
+                        <div class="ss-kv"><span><i class="ss-ch r"></i>Red Mean / Std</span><strong id="lblRedStats">0.0 / 0.0</strong></div>
+                        <div class="ss-kv"><span><i class="ss-ch g"></i>Green Mean / Std</span><strong id="lblGreenStats">0.0 / 0.0</strong></div>
+                        <div class="ss-kv"><span><i class="ss-ch b"></i>Blue Mean / Std</span><strong id="lblBlueStats">0.0 / 0.0</strong></div>
+                    </div>
+                    <div class="ss-inset">
+                        <strong class="d-block mb-3 ss-ink small"><i class="bi bi-graph-up-arrow me-2 ss-faint"></i>Spatial &amp; Chi-Square Metrics</strong>
+                        <div class="ss-kv"><span>Avg Neighbor Correlation</span><strong id="lblAvgCorr">0.0000</strong></div>
+                        <div class="ss-kv"><span>Chi-Square Anomaly Avg</span><strong id="lblChiAnomaly">0.0%</strong></div>
+                        <div class="ss-kv"><span>Zero / One Bit Counts</span><strong id="lblBitCounts">0 / 0</strong></div>
+                    </div>
+                </div>
+
+                <!-- Explanations -->
+                <h3 class="ss-sub-heading">Algorithm Explanations &amp; Detection Insights</h3>
+                <div class="ss-inset ss-notes mb-3">
+                    <p id="expRatioViva">Zero/One Ratio tests bit balance. Ratios close to 0.5000 suggest encrypted payload LSB randomization.</p>
+                    <p id="expChiViva">Chi-Square PoVs measures adjacent pair equalization caused by bit-flip embedding.</p>
+                    <p id="expCorrViva">Neighboring LSB correlation drops near 0.0 when natural spatial pixel coherence is destroyed.</p>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="ss-alert is-warn">
+                    <span class="ss-alert-icon"><i class="bi bi-exclamation-triangle"></i></span>
+                    <p class="pt-1"><strong id="steganalysisDisclaimer">Disclaimer: Steganalysis provides a 'Statistical Anomaly / Suspicion Indication' based on pixel distribution metrics. It does NOT claim definitive determination of hidden information.</strong></p>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+</div>
