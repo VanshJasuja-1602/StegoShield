@@ -254,5 +254,21 @@ def compare_images():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
-if __name__ == "__main__":
+def is_streamlit_running() -> bool:
+    """Detect if current execution is initiated by Streamlit Cloud runner."""
+    try:
+        from streamlit.runtime.scriptrunner import get_script_run_ctx
+        if get_script_run_ctx() is not None:
+            return True
+    except Exception:
+        pass
+    if "STREAMLIT_SERVER_PORT" in os.environ:
+        return True
+    import sys
+    return any("streamlit" in str(arg).lower() for arg in sys.argv)
+
+if is_streamlit_running():
+    from streamlit_app import main as streamlit_main
+    streamlit_main()
+elif __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)
