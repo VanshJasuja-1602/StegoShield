@@ -1,6 +1,6 @@
 """
-StegoShield - Streamlit Cloud Web Application
-Provides a complete, interactive cybersecurity dashboard for StegoShield:
+StegnoShield - Streamlit Cloud Web Application
+Provides a complete, interactive cybersecurity dashboard for StegnoShield:
 - Encode (AES-256-GCM + PBKDF2 + RGB LSB Embedding)
 - Decode & Tamper Detection (AEAD MAC Verification)
 - Steganalysis (Chi-Square, Entropy, Suspicion Score)
@@ -91,7 +91,7 @@ def apply_custom_theme():
 
 def main():
     st.set_page_config(
-        page_title="StegoShield",
+        page_title="StegnoShield",
         page_icon="🛡️",
         layout="wide",
         initial_sidebar_state="expanded"
@@ -100,7 +100,7 @@ def main():
 
     # Sidebar branding & info
     with st.sidebar:
-        st.title("🛡️ StegoShield")
+        st.title("🛡️ StegnoShield")
         st.caption("Secure Image Steganography & Steganalysis")
         st.markdown("---")
         st.markdown("""
@@ -338,7 +338,7 @@ def main():
     with tab_about:
         st.subheader("Technical Architecture & Project Overview")
         st.markdown("""
-        **StegoShield** implements an end-to-end authenticated cryptographic and steganographic system:
+        **StegnoShield** implements an end-to-end authenticated cryptographic and steganographic system:
         
         ### Protocol Bitstream Layout
         Each stego PNG contains an in-memory bitstream embedded in spatial LSBs:
